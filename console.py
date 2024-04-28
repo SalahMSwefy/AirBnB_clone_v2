@@ -3,13 +3,13 @@
 import cmd
 import sys
 from models.base_model import BaseModel
-from models.__init__ import storage
 from models.user import User
 from models.place import Place
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from models.__init__ import storage
 
 
 class HBNBCommand(cmd.Cmd):
@@ -118,13 +118,10 @@ class HBNBCommand(cmd.Cmd):
             argv = args.split(" ")
             new_dict = {}
             if not args:
-                print("** class name missing **")
-                return
+                return print("** class name missing **")
             elif argv[0] not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
+                return print("** class doesn't exist **")
             new_instance = HBNBCommand.classes[argv[0]]()
-            print(argv)
             for arg in argv[1:]:
                 key = arg.split('=')[0]
                 arg = arg.split("=")[1]
@@ -216,19 +213,13 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
         print_list = []
-
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
-        else:
-            for k, v in storage._FileStorage__objects.items():
+                return print("** class doesn't exist **")
+            objs = storage.all(args)
+            for v in objs.values():
                 print_list.append(str(v))
-
         print(print_list)
 
     def help_all(self):
