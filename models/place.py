@@ -5,6 +5,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
+
 class Place(BaseModel, Base):
     """ A place to stay """
     if models.storage_t == "db":
@@ -19,11 +20,17 @@ class Place(BaseModel, Base):
         price_by_night = Column(Integer, default=0, nullable=False)
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
-        reviews = relationship("Review", backref="place", cascade="all, delete")
+        reviews = relationship("Review", backref="place",
+                               cascade="all, delete")
         place_amenity = Table('place_amenity', Base.metadata,
-                                Column('place_id', String(60), ForeignKey('places.id'), primary_key=True, nullable=False),
-                                Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True, nullable=False))
-        amenities = relationship("Amenity", secondary=place_amenity, viewonly=False)
+                              Column('place_id', String(60),
+                                     ForeignKey('places.id'),
+                                     primary_key=True, nullable=False),
+                              Column('amenity_id', String(60),
+                                     ForeignKey('amenities.id'),
+                                     primary_key=True, nullable=False))
+        amenities = relationship("Amenity", secondary=place_amenity,
+                                 viewonly=False)
     else:
         city_id = ""
         user_id = ""
@@ -57,13 +64,11 @@ class Place(BaseModel, Base):
                 if amenity.id in self.amenity_ids:
                     amenity_list.append(amenity)
             return amenity_list
-        
+
         @amenities.setter
         def amenities(self, obj):
-            """ Setter attribute that handles append method for adding an Amenity.id to the attribute amenity_ids """
+            """ Setter attribute that handles append method for
+            adding an Amenity.id to the attribute amenity_ids """
             from models.amenity import Amenity
             if isinstance(obj, Amenity):
                 self.amenity_ids.append(obj.id)
-            
-        
-        

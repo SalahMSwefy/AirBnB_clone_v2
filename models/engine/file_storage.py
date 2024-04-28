@@ -51,18 +51,18 @@ class FileStorage:
             with open(self.__file_path, 'r') as file:
                 temp = json.load(file)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
-        
+
     def delete(self, obj=None):
-            """Deletes an object from __objects if it`s inside"""
-            if obj != None:
-                key = obj.__class__.__name__ + '.' + obj.id
-                if key in self.__objects:
-                    del self.__objects[key]
-                self.save()
-                
+        """Deletes an object from __objects if it`s inside"""
+        if obj:
+            key = obj.__class__.__name__ + '.' + obj.id
+            if key in self.__objects:
+                del self.__objects[key]
+            self.save()
+
     def close(self):
         """Call reload method for deserializing the JSON file to objects"""
         self.reload()

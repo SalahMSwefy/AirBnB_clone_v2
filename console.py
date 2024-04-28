@@ -17,6 +17,7 @@ classes = {
             'Review': Review
             }
 
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -73,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] =='}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -114,28 +115,28 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-            """ Create an object of any class"""
-            argv = args.split(" ")
-            new_dict = {}
-            if not args:
-                return print("** class name missing **")
-            elif argv[0] not in classes:
-                return print("** class doesn't exist **")
-            for arg in argv[1:]:
-                key = arg.split('=')[0]
-                val = arg.split("=")[1]
-                if val[0] == val[-1] == '"':
-                    val = val[1:-1]
-                    val = val.replace('"', '\\')
-                    val = val.replace('_', ' ')
-                elif '.' in val:
-                    val = float(val)
-                elif val.isdigit():
-                    val = int(val)
-                new_dict[key] = val
-            new_instance = classes[argv[0]](**new_dict)
-            print(new_instance.id)
-            new_instance.save()
+        """ Create an object of any class"""
+        argv = args.split(" ")
+        new_dict = {}
+        if not args:
+            return print("** class name missing **")
+        elif argv[0] not in classes:
+            return print("** class doesn't exist **")
+        for arg in argv[1:]:
+            key = arg.split('=')[0]
+            val = arg.split("=")[1]
+            if val[0] == val[-1] == '"':
+                val = val[1:-1]
+                val = val.replace('"', '\\')
+                val = val.replace('_', ' ')
+            elif '.' in val:
+                val = float(val)
+            elif val.isdigit():
+                val = int(val)
+            new_dict[key] = val
+        new_instance = classes[argv[0]](**new_dict)
+        print(new_instance.id)
+        new_instance.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -324,6 +325,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
