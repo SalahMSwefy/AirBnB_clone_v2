@@ -11,6 +11,11 @@ from models.amenity import Amenity
 from models.review import Review
 from models.__init__ import storage
 
+classes = {
+            'BaseModel': BaseModel, 'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+            }
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -18,11 +23,6 @@ class HBNBCommand(cmd.Cmd):
     # determines prompt for interactive/non-interactive modes
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
-    classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
              'number_rooms': int, 'number_bathrooms': int,
@@ -94,7 +94,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_quit(self, command):
         """ Method to exit the HBNB console"""
-        exit()
+        return True
 
     def help_quit(self):
         """ Prints the help documentation for quit  """
@@ -119,25 +119,23 @@ class HBNBCommand(cmd.Cmd):
             new_dict = {}
             if not args:
                 return print("** class name missing **")
-            elif argv[0] not in HBNBCommand.classes:
+            elif argv[0] not in classes:
                 return print("** class doesn't exist **")
-            new_instance = HBNBCommand.classes[argv[0]]()
             for arg in argv[1:]:
                 key = arg.split('=')[0]
-                arg = arg.split("=")[1]
+                val = arg.split("=")[1]
                 if arg[0] == '"':
-                    arg = arg[1:-1]
-                    arg = arg.replace('"', '\\')
-                    arg = arg.replace('_', ' ')
-                elif '.' in arg:
-                    arg = float(arg)
-                else:
-                    arg = int(arg)
-                if key not in new_instance.__dict__:
-                    setattr(new_instance, key, arg)
-                    new_dict[key] = arg
+                    val = val[1:-1]
+                    val = val.replace('"', '\\')
+                    val = val.replace('_', ' ')
+                elif '.' in val:
+                    val = float(val)
+                elif val.isdigit():
+                    val = int(val)
+                new_dict[key] = val
+            new_instance = classes[argv[0]](**new_dict)
             print(new_instance.id)
-            storage.save()
+            new_instance.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -215,7 +213,7 @@ class HBNBCommand(cmd.Cmd):
         print_list = []
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
-            if args not in HBNBCommand.classes:
+            if args not in classes:
                 return print("** class doesn't exist **")
             objs = storage.all(args)
             for v in objs.values():
