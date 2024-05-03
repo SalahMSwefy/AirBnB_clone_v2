@@ -72,3 +72,7 @@ class Place(BaseModel, Base):
             from models.amenity import Amenity
             if isinstance(obj, Amenity):
                 self.amenity_ids.append(obj.id)
+
+    def __init__(self, *args, **kwargs):
+        """ Initializes Place """
+        super().__init__(*args, **kwargs)
